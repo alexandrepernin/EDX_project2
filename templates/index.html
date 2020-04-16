@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+
+{% block body %}
+<h1> Ready to chat? </h1>
+
+<form action="{{ url_for('channel') }}" method="post">
+  <div class="form-group">
+
+    <input name="name" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Display Name" required>
+    <small id="emailHelp" class="form-text text-muted">This name will be displayed when you send a message.</small>
+  </div>
+  <button type="submit" class="btn btn-primary">Go</button>
+</form>
+
+{% endblock %}
+
+{% block rightcorner %}
+{% endblock %}
