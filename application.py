@@ -13,19 +13,17 @@ channels = []
 def index():
     return render_template('index.html')
 
-@app.route("/channel", methods=["POST"])
+@app.route("/channel", methods=["GET", "POST"])
 def channel():
-    name = request.form.get("name")
-    if not any(c.isalpha() for c in name):
-        return render_template('index.html')
-    else:
+    if request.method == 'POST':
+        name = request.form.get("name")
         return render_template('channel.html', name=name, channels=channels)
+    elif request.method == 'GET':
+            return render_template('channel.html' , channels=channels)
 
-@app.route("/chat", methods=["POST"])
+@app.route("/chat", methods=["GET","POST"])
 def chat():
     channel = request.form.get("channel_name")
-    if channel in channels:
-        return render_template('channel.html', name=name, message='Channel already exists', channels=channels)
-    else:
-        channels.append(channel)
-        return("New channel named {}".format(channel))
+    channels.append(channel)
+    #     return("New channel named {}".format(channel))
+    return render_template('chat.html')

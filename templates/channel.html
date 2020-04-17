@@ -1,34 +1,81 @@
-{% extends "layout.html" %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Home</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <script>
+          var channels = [];
+          {% for channel in channels %}
+            channels.push('{{channel}}');
+          {% endfor %}
+          document.addEventListener('DOMContentLoaded', () => {
+                let hello = 'Hello ';
+                document.querySelector('#Name').innerHTML = hello.concat(localStorage.getItem('Name'));
 
-{% block title %}
-    Home
-{% endblock %}
+                document.querySelector('#channel_entry').onkeyup = () => {
+                    if (channels.includes(document.querySelector('#channel_entry').value)) {
+                      document.querySelector('#submit_button').disabled = true;
+                      document.querySelector('#subtext').innerHTML = 'This channel already exists!';
+                    }
+                    else {
+                      document.querySelector('#submit_button').disabled = false;
+                    }
+
+                };
+           });
+        </script>
+     </head>
+     <body>
+         <div class="container-fluid">
+           <div class="row">
+                 <div class="col-4">
+                 </div>
+                 <div class="col-4">
+                 <br>
+                 <br>
+                 <br>
+                 <br>
+                 <br>
+                 <br>
+                 <br>
+                 <h1 id='Name'> </h1>
+                 List of currently available channels:
+                 <br>
+                 <div class="list-group">
+                   {% if channels %}
+                      {% for channel in channels %}
+                      <a href="{{ url_for('chat') }}" class="list-group-item list-group-item-action">Channel: {{channel}}</a>
+                      {% endfor %}
+                   {% else %}
+                      <p>Sorry, no channel created yet</p>
+                   {% endif %}
+                 </div>
 
 
-{% block body %}
-<h1> Hello {{name}} </h1>
-<br>
-List of currently available channels:
-<br>
-<div class="list-group">
-  {% for channel in channels %}
-  <a href="#" class="list-group-item list-group-item-action">Channel: {{channel}}</a>
-  {% endfor %}
-</div>
+                </div>
+                <div class="col-3">
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  Don't find what you're looking for? Create one:
+                  <form action="{{url_for('chat') }}" method="post">
+                    <div class="form-group">
 
-<br>
-<br>
-Don't find what you're looking for? Create one:
-<form action="{{url_for('chat') }}" method="post">
-  <div class="form-group">
+                      <input id="channel_entry" name="channel_name" type="text" class="form-control" aria-describedby="emailHelp" placeholder="Channel name" required>
+                      <small id="subtext" class="form-text text-muted">This channel will be created just for you.</small>
+                    </div>
+                    <button id="submit_button" type="submit" class="btn btn-primary">Create channel</button>
+                  </form>
+                </div>
 
-    <input name="channel_name" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Channel name" required>
-    <small id="emailHelp" class="form-text text-muted">This channel will be created just for you.</small>
-  </div>
-  <button type="submit" class="btn btn-primary">Create channel</button>
-</form>
-
-{% endblock %}
-
-{% block rightcorner %}
-{% endblock %}
+            </div>
+        </div>
+    </body>
+</html>
