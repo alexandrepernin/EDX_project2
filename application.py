@@ -27,3 +27,9 @@ def chat():
     channels.append(channel)
     #     return("New channel named {}".format(channel))
     return render_template('chat.html')
+
+@app.route("/create-channel", methods=["POST"])
+def create_channel():
+    channel = request.form.get("channel_name")
+    channels.append(channel)
+    return jsonify({"success": True})

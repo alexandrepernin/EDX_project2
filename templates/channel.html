@@ -9,10 +9,34 @@
             channels.push('{{channel}}');
           {% endfor %}
           document.addEventListener('DOMContentLoaded', () => {
+                // 1 - Update welcome message with name stored in local storage
                 let hello = 'Hello ';
                 document.querySelector('#Name').innerHTML = hello.concat(localStorage.getItem('Name'));
 
-                document.querySelector('#channel_entry').onkeyup = () => {
+                // 2 - Set the onsubmit property of the button: Ajax request to store server-side the new channel name
+                document.querySelector('#form').onsubmit = () => {
+
+                    // 2.1 - Initialize new request
+                    const request = new XMLHttpRequest();
+                    const channel_name = document.querySelector('#channel_entry').value;
+                    request.open('POST', '/create-channel');
+
+                    request.onload = () => {
+                        location.reload();
+                    }
+
+                    // 2.2 - Add data to send with request: the name of the new channel
+                    const data = new FormData();
+                    data.append('channel_name', channel_name);
+
+                    // 2.3 - Send request
+                    request.send(data);
+                    return false;
+                  };
+
+
+                  // 3 - Make sure the channel name is new
+                  document.querySelector('#channel_entry').onkeyup = () => {
                     if (channels.includes(document.querySelector('#channel_entry').value)) {
                       document.querySelector('#submit_button').disabled = true;
                       document.querySelector('#subtext').innerHTML = 'This channel already exists!';
@@ -21,7 +45,8 @@
                       document.querySelector('#submit_button').disabled = false;
                     }
 
-                };
+                  };
+
            });
         </script>
      </head>
@@ -65,10 +90,10 @@
                   <br>
                   <br>
                   Don't find what you're looking for? Create one:
-                  <form action="{{url_for('chat') }}" method="post">
+                  <form id="form" method="post">
                     <div class="form-group">
 
-                      <input id="channel_entry" name="channel_name" type="text" class="form-control" aria-describedby="emailHelp" placeholder="Channel name" required>
+                      <input id="channel_entry" type="text" class="form-control" aria-describedby="emailHelp" placeholder="Channel name" required>
                       <small id="subtext" class="form-text text-muted">This channel will be created just for you.</small>
                     </div>
                     <button id="submit_button" type="submit" class="btn btn-primary">Create channel</button>
