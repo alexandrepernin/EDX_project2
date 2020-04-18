@@ -21,12 +21,9 @@ def channel():
     elif request.method == 'GET':
             return render_template('channel.html' , channels=channels)
 
-@app.route("/chat", methods=["GET","POST"])
-def chat():
-    #channel = request.form.get("channel_name")
-    #channels.append(channel)
-    #     return("New channel named {}".format(channel))
-    return render_template('chat.html')
+@app.route("/chat/<int:nb>", methods=["GET","POST"])
+def chat(nb):
+    return render_template('chat.html', channels=channels, channel_nb=nb)
 
 @socketio.on("Send message")
 def send(data):

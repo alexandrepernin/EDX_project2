@@ -71,7 +71,7 @@
                  <div class="list-group">
                    {% if channels %}
                       {% for channel in channels %}
-                      <a href="{{ url_for('chat') }}" class="list-group-item list-group-item-action">Channel: {{channel}}</a>
+                      <a href="{{ url_for('chat', nb=loop.index)}}" class="list-group-item list-group-item-action">Channel {{loop.index}}: {{channel}}</a>
                       {% endfor %}
                    {% else %}
                       <p>Sorry, no channel created yet</p>

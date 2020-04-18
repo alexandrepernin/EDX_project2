@@ -35,6 +35,17 @@
        <div class="container-fluid">
        <div class="row">
           <div class="col-4">
+            <br>
+            <br>
+            <br>
+            {% if channels %}
+               {% for channel in channels %}
+               <p>Channel {{loop.index}}: {{channel}}</p>
+               {% endfor %}
+               <p> You're on channel {{channels[channel_nb-1]}}
+            {% else %}
+               <p>Weird</p>
+            {% endif %}
           </div>
           <div class="col-4">
              <br>
