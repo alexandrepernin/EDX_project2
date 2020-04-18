@@ -3,11 +3,52 @@
     <head>
         <title>Home</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
         <script>
+            document.addEventListener('DOMContentLoaded', () => {
 
+              // Connect to websocket
+              var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+
+              // When connected, configure buttons
+              socket.on('connect', () => {
+
+                  // Each button should emit a "submit vote" event
+                  document.querySelectorAll('button').forEach(button => {
+                      button.onclick = () => {
+                          const selection = button.dataset.vote;
+                          // Emit to the web server the event called submit vote, associated with a json object
+                          socket.emit('submit vote', {'selection': selection});
+                      };
+                  });
+              });
+
+              // When a new vote is announced, add to the unordered list
+              socket.on('announce vote', data => {
+                  const li = document.createElement('li');
+                  li.innerHTML = `Vote recorded: ${data.selection}`;
+                  document.querySelector('#messages').append(li);
+              });
+            });
         </script>
      </head>
      <body>
-         <p> You're on channel {{channel}} </p>
+       <div class="container-fluid">
+       <div class="row">
+          <div class="col-4">
+          </div>
+          <div class="col-4">
+             <br>
+             <br>
+             <br>
+             <br>
+             <br>
+             <ul id="messages">
+             </ul>
+             <hr>
+             <button id="message-button" data-vote="yes">Send</button>
+          </div>
+        </div>
+      </div>
     </body>
 </html>
