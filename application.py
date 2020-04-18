@@ -8,7 +8,6 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 socketio = SocketIO(app)
 
 channels = []
-votes = {"yes": 0, "no": 0, "maybe": 0}
 
 @app.route("/")
 def index():
@@ -29,10 +28,10 @@ def chat():
     #     return("New channel named {}".format(channel))
     return render_template('chat.html')
 
-@socketio.on("submit vote")
-def vote(data):
-    selection = data["selection"]
-    emit("announce vote", {"selection": selection}, broadcast=True)
+@socketio.on("Send message")
+def send(data):
+    message = data["message"]
+    emit("deliver message", {"message": message}, broadcast=True)
 
 @app.route("/create-channel", methods=["POST"])
 def create_channel():
