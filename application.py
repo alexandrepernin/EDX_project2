@@ -31,7 +31,8 @@ def chat():
 @socketio.on("Send message")
 def send(data):
     message = data["message"]
-    emit("deliver message", {"message": message}, broadcast=True)
+    sender = data["sender"]
+    emit("deliver message", {"message": message, "sender":sender}, broadcast=True)
 
 @app.route("/create-channel", methods=["POST"])
 def create_channel():
