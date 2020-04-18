@@ -1,5 +1,5 @@
 import os
-
+import datetime
 from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO, emit
 
@@ -32,7 +32,8 @@ def chat():
 def send(data):
     message = data["message"]
     sender = data["sender"]
-    emit("deliver message", {"message": message, "sender":sender}, broadcast=True)
+    timestamp = datetime.datetime.now().strftime("(%d-%b-%Y) %H:%M")
+    emit("deliver message", {"message": message, "sender":sender, "time": timestamp}, broadcast=True)
 
 @app.route("/create-channel", methods=["POST"])
 def create_channel():
