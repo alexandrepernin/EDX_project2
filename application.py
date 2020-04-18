@@ -23,13 +23,18 @@ def channel():
 
 @app.route("/chat", methods=["GET","POST"])
 def chat():
-    channel = request.form.get("channel_name")
-    channels.append(channel)
+    #channel = request.form.get("channel_name")
+    #channels.append(channel)
     #     return("New channel named {}".format(channel))
     return render_template('chat.html')
 
 @app.route("/create-channel", methods=["POST"])
 def create_channel():
+    global channels
     channel = request.form.get("channel_name")
-    channels.append(channel)
-    return jsonify({"success": True})
+    if channel is None:
+        return jsonify({"success": False})
+    else:
+        channels.append(channel)
+        channels = list(dict.fromkeys(channels))
+        return jsonify({"success": True})
