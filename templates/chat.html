@@ -7,6 +7,8 @@
         <script>
             document.addEventListener('DOMContentLoaded', () => {
 
+              localStorage.setItem('user_channel', '{{channels[channel_nb-1]}}');
+              localStorage.setItem('user_channel_nb', '{{channel_nb}}');
 
               // Add previously send messages to the list of messages
               {% for message in messages %}
@@ -39,6 +41,7 @@
                     const li = document.createElement('li');
                     li.innerHTML = `${data.time} - ${data.sender}: ${data.message}`;
                     document.querySelector('#messages').append(li);
+                    document.querySelector('#message_entry').value = "";
                   }
               });
             });
