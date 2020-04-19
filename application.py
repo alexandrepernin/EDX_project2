@@ -8,6 +8,7 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 socketio = SocketIO(app)
 
 channels = []
+all_messages = {}
 
 @app.route("/")
 def index():
@@ -27,21 +28,28 @@ def chat(nb):
 
 @socketio.on("Send message")
 def send(data):
+    global all_messages
     message = data["message"]
     sender = data["sender"]
     channel = data["channel"]
     timestamp = datetime.datetime.now().strftime("(%d-%b-%Y) %H:%M")
+    all_messages[channel].append({'message':message, 'timestamp':timestamp, 'sender':sender})
+    if len(all_messages[channel])>=101:
+        all_messages[channel]=all_messages[channel][1:]
     emit("deliver message", {"message": message, "sender":sender, "time": timestamp, "channel":channel}, broadcast=True)
 
 @app.route("/create-channel", methods=["POST"])
 def create_channel():
     global channels
+    global all_messages
     channel = request.form.get("channel_name")
     if channel is None:
         return jsonify({"success": False})
     else:
         channels.append(channel)
+        all_messages[channel] = []
         channels = list(dict.fromkeys(channels))
+
         return jsonify({"success": True})
 
 if __name__ == '__main__':
