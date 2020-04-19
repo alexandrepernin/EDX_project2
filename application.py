@@ -29,8 +29,9 @@ def chat(nb):
 def send(data):
     message = data["message"]
     sender = data["sender"]
+    channel = data["channel"]
     timestamp = datetime.datetime.now().strftime("(%d-%b-%Y) %H:%M")
-    emit("deliver message", {"message": message, "sender":sender, "time": timestamp}, broadcast=True)
+    emit("deliver message", {"message": message, "sender":sender, "time": timestamp, "channel":channel}, broadcast=True)
 
 @app.route("/create-channel", methods=["POST"])
 def create_channel():

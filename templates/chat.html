@@ -17,16 +17,20 @@
                   document.querySelector('#message_button').onclick = () => {
                     const message = document.querySelector('#message_entry').value;
                     const sender = localStorage.getItem('Name')
+                    const channel = '{{channels[channel_nb-1]}}'
                     // Emit to the web server the event called Send Message, associated with a json object
-                    socket.emit('Send message', {'message': message, 'sender': sender});
+                    socket.emit('Send message', {'message': message, 'sender': sender, 'channel':channel});
                   }
               });
 
               // When a new message is announced, add to the unordered list
               socket.on('deliver message', data => {
-                  const li = document.createElement('li');
-                  li.innerHTML = `${data.time} - ${data.sender}: ${data.message}`;
-                  document.querySelector('#messages').append(li);
+                  const current_channel = '{{channels[channel_nb-1]}}'
+                  if (data.channel==current_channel) {
+                    const li = document.createElement('li');
+                    li.innerHTML = `${data.time} - ${data.sender}: ${data.message}`;
+                    document.querySelector('#messages').append(li);
+                  }
               });
             });
         </script>
