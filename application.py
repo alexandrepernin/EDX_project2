@@ -24,7 +24,8 @@ def channel():
 
 @app.route("/chat/<int:nb>", methods=["GET","POST"])
 def chat(nb):
-    return render_template('chat.html', channels=channels, channel_nb=nb)
+    current_channel=channels[nb-1]
+    return render_template('chat.html', channels=channels, channel_nb=nb, messages=all_messages[current_channel])
 
 @socketio.on("Send message")
 def send(data):

@@ -7,6 +7,15 @@
         <script>
             document.addEventListener('DOMContentLoaded', () => {
 
+
+              // Add previously send messages to the list of messages
+              {% for message in messages %}
+              var litem = document.createElement('li');
+              var message = '{{message.timestamp}} - '+'{{message.sender}}:'+' {{message.message}}';
+              litem.innerHTML = message;
+              document.querySelector('#messages').append(litem);
+              {% endfor %}
+
               // Connect to websocket
               var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
 
