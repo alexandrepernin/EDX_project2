@@ -1,8 +1,3 @@
-var channels = [];
-
-{% for channel in channels %}
-  channels.push('{{channel}}');
-{% endfor %}
 
 document.addEventListener('DOMContentLoaded', () => {
       // 1 - Update welcome message with name stored in local storage
