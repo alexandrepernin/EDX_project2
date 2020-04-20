@@ -3,6 +3,7 @@
     <head>
         <title>{% block title %}{% endblock %}</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        {% block js %}{% endblock %}
     </head>
     <body>
 
@@ -10,17 +11,11 @@
         <div class="container-fluid">
           <div class="row">
                 <div class="col-4">
+                {% block left %}{% endblock %}
                 </div>
 
                 <div class="col-4">
-                  <br>
-                  <br>
-                  <br>
-                  <br>
-                  <br>
-                  <br>
-                  <br>
-                  {% block body %}
+                  {% block middle %}
                   {% endblock %}
                 </div>
                 <div class="col-2">

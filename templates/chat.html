@@ -5,46 +5,46 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
         <script>
-            document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', () => {
 
-              localStorage.setItem('user_channel', '{{channels[channel_nb-1]}}');
-              localStorage.setItem('user_channel_nb', '{{channel_nb}}');
+          localStorage.setItem('user_channel', '{{channels[channel_nb-1]}}');
+          localStorage.setItem('user_channel_nb', '{{channel_nb}}');
 
-              // Add previously send messages to the list of messages
-              {% for message in messages %}
-              var litem = document.createElement('li');
-              var message = '{{message.timestamp}} - '+'{{message.sender}}:'+' {{message.message}}';
-              litem.innerHTML = message;
-              document.querySelector('#messages').append(litem);
-              {% endfor %}
+          // Add previously send messages to the list of messages
+          {% for message in messages %}
+          var litem = document.createElement('li');
+          var message = '{{message.timestamp}} - '+'{{message.sender}}:'+' {{message.message}}';
+          litem.innerHTML = message;
+          document.querySelector('#messages').append(litem);
+          {% endfor %}
 
-              // Connect to websocket
-              var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+          // Connect to websocket
+          var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
 
-              // When connected, configure buttons
-              socket.on('connect', () => {
+          // When connected, configure buttons
+          socket.on('connect', () => {
 
-                  // The button should emit a "Send message" event
-                  document.querySelector('#message_button').onclick = () => {
-                    const message = document.querySelector('#message_entry').value;
-                    const sender = localStorage.getItem('Name')
-                    const channel = '{{channels[channel_nb-1]}}'
-                    // Emit to the web server the event called Send Message, associated with a json object
-                    socket.emit('Send message', {'message': message, 'sender': sender, 'channel':channel});
-                  }
-              });
+              // The button should emit a "Send message" event
+              document.querySelector('#message_button').onclick = () => {
+                const message = document.querySelector('#message_entry').value;
+                const sender = localStorage.getItem('Name')
+                const channel = '{{channels[channel_nb-1]}}'
+                // Emit to the web server the event called Send Message, associated with a json object
+                socket.emit('Send message', {'message': message, 'sender': sender, 'channel':channel});
+              }
+          });
 
-              // When a new message is announced, add to the unordered list
-              socket.on('deliver message', data => {
-                  const current_channel = '{{channels[channel_nb-1]}}'
-                  if (data.channel==current_channel) {
-                    const li = document.createElement('li');
-                    li.innerHTML = `${data.time} - ${data.sender}: ${data.message}`;
-                    document.querySelector('#messages').append(li);
-                    document.querySelector('#message_entry').value = "";
-                  }
-              });
-            });
+          // When a new message is announced, add to the unordered list
+          socket.on('deliver message', data => {
+              const current_channel = '{{channels[channel_nb-1]}}'
+              if (data.channel==current_channel) {
+                const li = document.createElement('li');
+                li.innerHTML = `${data.time} - ${data.sender}: ${data.message}`;
+                document.querySelector('#messages').append(li);
+                document.querySelector('#message_entry').value = "";
+              }
+          });
+        });
         </script>
      </head>
      <body>
