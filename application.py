@@ -53,5 +53,10 @@ def create_channel():
 
         return jsonify({"success": True})
 
+@app.route("/get-channels", methods=["GET"])
+def get_channel():
+    return jsonify(channels)
+
+
 if __name__ == '__main__':
     socketio.run(app)
