@@ -5,16 +5,15 @@ function get_channels(channel_list) {
     const request = new XMLHttpRequest();
     request.open('GET', '/get-channels');
     request.onload = () => {
-        const existing_channels = JSON.parse(request.responseText);
+        var existing_channels = JSON.parse(request.responseText);
         for (i = 0; i < existing_channels.length; i++) {
           channel_list.push(existing_channels[i]);
           // Create link and set its attributes
           var list_item = document.createElement('a');
           list_item.className = "nav-link";
-          list_item.href = "/chat";
           list_item.dataset.channel = existing_channels[i];
+          list_item.href ="/chat";
           list_item.innerHTML = "Channel ".concat(i.toString(), ": ",existing_channels[i]);
-          list_item.onclick = () => {localStorage.setItem('user_channel', list_item.dataset.channel);}
           document.querySelector('#link_list').appendChild(list_item);
         }
 
@@ -44,20 +43,44 @@ function prevent_channel_duplicates() {
   }
 };
 
+function set_onclick_properties() {
+  var links = document.querySelectorAll('.nav-link');
+  for (j = 0; j < links.length; j++) {
+    var to_store = links[j].dataset.channel;
+    links[j].onclick = () => {
+      localStorage.setItem('user_channel', to_store);
+    }
+  }
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
 
       // 1 - Get list of existing channels
       get_channels(channel_list);
+
+
+      //Beginning of tests: Pb = nav links can't be accessed this way xxxxxxxxxxxxxxxxxxxxxx
+      const test = document.querySelectorAll('.nav-link')[0];
+      if (test){
+        document.querySelector('#fortest').innerHTML = test.dataset.channel;
+      }
+
+      //document.querySelector('#fortest').innerHTML=test;
+      // End of tests xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
       // 1 - Update welcome message with name stored in local storage
       document.querySelector('#Name').innerHTML = 'Hello '.concat(localStorage.getItem('Name'));
 
       // 2 - Set the onsubmit property of the button: Ajax request to store server-side the new channel name
       document.querySelector('#form').onsubmit = () => post_new_channel();
 
-        // 3 - Make sure the channel name is new
-        // 3.1 - By default, submit button is disabled
-        document.querySelector('#submit_button').disabled = true;
-        // 3.2 - On key up => verifies that contains at least one letter and that the channels is not already in the channel list
-        document.querySelector('#channel_entry').onkeyup = () => prevent_channel_duplicates();
+      // 3 - Make sure the channel name is new
+      // 3.1 - By default, submit button is disabled
+      document.querySelector('#submit_button').disabled = true;
+      // 3.2 - On key up => verifies that contains at least one letter and that the channels is not already in the channel list
+      document.querySelector('#channel_entry').onkeyup = () => prevent_channel_duplicates();
+
+
 
  });
