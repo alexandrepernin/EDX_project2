@@ -1,0 +1,100 @@
+{% extends "layout.html" %}
+{% block title %} Chat {% endblock %}
+{% block js %}
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+<script>
+
+function get_channels() {
+    const request = new XMLHttpRequest();
+    request.open('GET', '/get-messages');
+    request.onload = () => {
+        const response = request.responseText;
+        <!-- existing_messages.forEach(add_message_to_list); -->
+    };
+    const data = new FormData();
+    const channel_name = localStorage.getItem('user_channel');
+    data.append('channel_name', channel_name);
+    request.send(data);
+};
+
+function add_message_to_list(channel) {
+  const message_item = document.createElement('li');
+  message_item.innerHTML = channel.message;
+  // Add post to DOM.
+  document.querySelector('#messages').appendChild(message_item);
+};
+
+
+document.addEventListener('DOMContentLoaded', () => {
+            const channel = localStorage.getItem('user_channel');
+            document.querySelector('#current_chan').innerHTML=channel;
+            get_channels();
+
+            // Connect to websocket
+            var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+
+            // When connected, configure buttons
+            socket.on('connect', () => {
+
+                // The button should emit a "Send message" event
+                document.querySelector('#message_button').onclick = () => {
+                  const message = document.querySelector('#message_entry').value;
+                  const sender = localStorage.getItem('Name');
+                  const channel1 = localStorage.getItem('user_channel');
+                  // Emit to the web server the event called Send Message, associated with a json object
+                  socket.emit('Send message', {'message': message, 'sender': sender, 'channel':channel});
+                }
+            });
+
+            // When a new message is announced, add to the unordered list
+            socket.on('deliver message', data => {
+                const current_channel = localStorage.getItem('user_channel');
+                if (data.channel==current_channel) {
+                  const li = document.createElement('li');
+                  li.innerHTML = `${data.time} - ${data.sender}: ${data.message}`;
+                  document.querySelector('#messages').append(li);
+                  document.querySelector('#message_entry').value = "";
+                }
+            });
+});
+
+</script>
+{% endblock %}
+
+{% block middle %}
+<br>
+<br>
+<br>
+<br>
+<br>
+<ul id="messages">
+</ul>
+<hr>
+<br>
+<br>
+<input id="message_entry" type="text" class="form-control" placeholder="Message" required>
+<br>
+<button id="message_button" class="btn btn-primary">Send message</button>
+{% endblock %}
+
+{% block right %}
+<br>
+<br>
+<br>
+<br>
+<p> List of channels: </p>
+<br>
+{% if channels %}
+<div class="list-group">
+   {% for channel in channels %}
+   <a href="#" class="list-group-item list-group-item-action">Channel {{loop.index}}: {{channel}} </a>
+   {% endfor %}
+</div>
+<br>
+<br>
+<p id="current_chan"> You're on a channel called: XXX </p>
+{% else %}
+<p>Weird, channels object seems empty</p>
+{% endif %}
+{% endblock %}

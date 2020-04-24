@@ -47,6 +47,9 @@ function prevent_channel_duplicates() {
   }
 };
 
+
+
+
 document.addEventListener('DOMContentLoaded', () => {
 
       // 1 - Get list of existing channels
@@ -63,6 +66,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('#submit_button').disabled = true;
         // 3.2 - On key up => verifies that contains at least one letter and that the channels is not already in the channel list
         document.querySelector('#channel_entry').onkeyup = () => prevent_channel_duplicates();
+
+        document.querySelectorAll('.nav-link').forEach(link => {
+                    link.onclick = () => {
+                        localStorage.setItem('user_channel', link.dataset.channel);
+                        window.location = "{{url_for('chat')}}";
+                    };
+        });
 
  });
 
@@ -89,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
  <div class="list-group">
    {% if channels %}
       {% for channel in channels %}
-      <a href="{{ url_for('chat', nb=loop.index)}}" class="list-group-item list-group-item-action">Channel {{loop.index}}: {{channel}}</a>
+      <a href="{{url_for('chat')}}" class="nav-link" data-channel="{{channel}}">Channel {{loop.index}}: {{channel}}</a>
       {% endfor %}
    {% else %}
       <p>Sorry, no channel created yet</p>
