@@ -3,6 +3,7 @@ import datetime
 from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO, emit
 import logging
+import json
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
@@ -57,11 +58,16 @@ def create_channel():
 def get_channel():
     return jsonify(channels)
 
-@app.route("/get-messages", methods=["GET"])
+@app.route("/get-messages", methods=["POST"])
 def get_messages():
     channel = request.form.get("channel_name")
-    app.logger.info('Channel pour lequel on demande les messages: {}'.format(channel))
-    return jsonify(all_messages[channel])
+    if channel:
+        app.logger.info('Channel pour lequel on demande les messages: {}'.format(channel))
+        app.logger.info(print(json.dumps(all_messages[channel])))
+        return jsonify(json.dumps(all_messages[channel]))
+    else:
+        app.logger.info('Channel pour lequel on demande les messages: {}'.format(channel))
+        return jsonify({"success": False})
 
 
 if __name__ == '__main__':

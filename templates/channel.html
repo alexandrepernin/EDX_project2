@@ -2,6 +2,14 @@
 {% block title %} Channel {% endblock %}
 {% block js %}
 <script>
+
+const previous_channel = localStorage.getItem('user_channel');
+if (previous_channel) {
+  window.location = "{{url_for('chat')}}";
+}
+</script>
+
+<script>
 var channels = [];
 {% for channel in channels %}
   channels.push('{{channel}}');

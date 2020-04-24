@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+            
+
               // Local storage for the display name:
               document.querySelector('#submit_button').onclick = () => {
                 let name = document.querySelector('#name_entry').value

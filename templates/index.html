@@ -1,6 +1,16 @@
 {% extends "layout.html" %}
 {% block title %} Home {% endblock %}
-{% block js %} <script src="{{ url_for('static', filename='index.js') }}"></script> {% endblock %}
+{% block js %}
+<script>
+
+const previous_channel = localStorage.getItem('user_channel');
+if (previous_channel) {
+  window.location = "{{url_for('chat')}}";
+}
+</script>
+<script src="{{ url_for('static', filename='index.js') }}"></script>
+
+{% endblock %}
 
 {% block middle %}
 <br>
