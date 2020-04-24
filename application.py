@@ -26,7 +26,7 @@ def channel():
 
 @app.route("/chat", methods=["GET","POST"])
 def chat():
-    return render_template('chatonepage.html', channels=channels)
+    return render_template('chat.html', channels=channels)
 
 @socketio.on("Send message")
 def send(data):
@@ -64,7 +64,10 @@ def get_messages():
     if channel:
         app.logger.info('Channel pour lequel on demande les messages: {}'.format(channel))
         app.logger.info(print(json.dumps(all_messages[channel])))
-        return jsonify(json.dumps(all_messages[channel]))
+        if len(all_messages[channel])>0:
+            return jsonify(all_messages[channel])
+        else:
+            return
     else:
         app.logger.info('Channel pour lequel on demande les messages: {}'.format(channel))
         return jsonify({"success": False})

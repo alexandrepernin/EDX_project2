@@ -1,32 +1,20 @@
-{% extends "layout.html" %}
-{% block title %} Chat {% endblock %}
-{% block js %}
-
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
-<script>
-
-
-function add_message_to_list(message) {
-    const message_item = document.createElement('li');
-    message_item.innerHTML = message.sender;
-    // Add post to DOM.
-    document.querySelector('#messages').appendChild(message_item);
-};
-
 function get_previous_messages(channel_name) {
     const request = new XMLHttpRequest();
     request.open('POST', '/get-messages');
     request.onload = () => {
         const response = request.responseText;
         const existing_messages = JSON.parse(response);
-        // existing_messages.forEach(add_message_to_list);
+        localStorage.setItem('Nb_Previous_Messages', Object.keys(existing_messages).length)
+        for (i = 0; i < Object.keys(existing_messages).length; i++) {
+          var message_item = document.createElement('li');
+          message_item.innerHTML = existing_messages[i]["timestamp"].concat(" - ", existing_messages[i]["sender"],": ", existing_messages[i]["message"]);
+          document.querySelector('#messages').appendChild(message_item);
+        }
     };
     const data = new FormData();
     data.append('channel_name', channel_name);
     request.send(data);
 };
-
-
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -63,43 +51,3 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 });
-
-</script>
-{% endblock %}
-
-{% block middle %}
-<br>
-<br>
-<br>
-<br>
-<br>
-<ul id="messages">
-</ul>
-<hr>
-<br>
-<br>
-<input id="message_entry" type="text" class="form-control" placeholder="Message" required>
-<br>
-<button id="message_button" class="btn btn-primary">Send message</button>
-{% endblock %}
-
-{% block right %}
-<br>
-<br>
-<br>
-<br>
-<p> List of channels: </p>
-<br>
-{% if channels %}
-<div class="list-group">
-   {% for channel in channels %}
-   <a href="#" class="list-group-item list-group-item-action">Channel {{loop.index}}: {{channel}} </a>
-   {% endfor %}
-</div>
-<br>
-<br>
-<p id="current_chan"> You're on a channel called: XXX </p>
-{% else %}
-<p>Weird, channels object seems empty</p>
-{% endif %}
-{% endblock %}
