@@ -20,9 +20,9 @@ def index():
 def channel():
     if request.method == 'POST':
         name = request.form.get("name")
-        return render_template('channel.html', name=name, channels=channels)
+        return render_template('channel.html')
     elif request.method == 'GET':
-            return render_template('channel.html' , channels=channels)
+            return render_template('channel.html')
 
 @app.route("/chat", methods=["GET","POST"])
 def chat():

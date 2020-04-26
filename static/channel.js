@@ -8,16 +8,26 @@ function get_channels(channel_list) {
         var existing_channels = JSON.parse(request.responseText);
         for (i = 0; i < existing_channels.length; i++) {
           channel_list.push(existing_channels[i]);
-          // Create link and set its attributes
           var list_item = document.createElement('a');
           list_item.className = "nav-link";
+          var channel_name = existing_channels[i];
           list_item.dataset.channel = existing_channels[i];
-          list_item.href ="/chat";
+          list_item.id = existing_channels[i];
+          list_item.href = "/chat";
           list_item.innerHTML = "Channel ".concat(i.toString(), ": ",existing_channels[i]);
           document.querySelector('#link_list').appendChild(list_item);
         }
+        document.querySelectorAll('.nav-link').forEach(link => {
+                      link.onclick = () => {
+                          var data = link.dataset.channel;
+                          localStorage.setItem('user_channel', data);
+                          window.location ="/chat";
+                          return false;
+                      };
+                  });
 
-    };
+        };
+
     request.send();
 };
 
@@ -43,31 +53,10 @@ function prevent_channel_duplicates() {
   }
 };
 
-function set_onclick_properties() {
-  var links = document.querySelectorAll('.nav-link');
-  for (j = 0; j < links.length; j++) {
-    var to_store = links[j].dataset.channel;
-    links[j].onclick = () => {
-      localStorage.setItem('user_channel', to_store);
-    }
-  }
-}
-
-
 document.addEventListener('DOMContentLoaded', () => {
 
       // 1 - Get list of existing channels
       get_channels(channel_list);
-
-
-      //Beginning of tests: Pb = nav links can't be accessed this way xxxxxxxxxxxxxxxxxxxxxx
-      const test = document.querySelectorAll('.nav-link')[0];
-      if (test){
-        document.querySelector('#fortest').innerHTML = test.dataset.channel;
-      }
-
-      //document.querySelector('#fortest').innerHTML=test;
-      // End of tests xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
       // 1 - Update welcome message with name stored in local storage
       document.querySelector('#Name').innerHTML = 'Hello '.concat(localStorage.getItem('Name'));
@@ -81,6 +70,12 @@ document.addEventListener('DOMContentLoaded', () => {
       // 3.2 - On key up => verifies that contains at least one letter and that the channels is not already in the channel list
       document.querySelector('#channel_entry').onkeyup = () => prevent_channel_duplicates();
 
-
+      document.getElementById('link_list').childNodes.forEach(link => {
+                    link.onclick = () => {
+                        var dataloop = link.dataset.channel;
+                        localStorage.setItem('user_channel', dataloop);
+                        return false;
+                    };
+                });
 
  });
