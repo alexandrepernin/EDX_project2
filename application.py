@@ -67,9 +67,8 @@ def get_messages():
         if len(all_messages[channel])>0:
             return jsonify(all_messages[channel])
         else:
-            return
+            return jsonify({"Previous Messages": False})
     else:
-        app.logger.info('Channel pour lequel on demande les messages: {}'.format(channel))
         return jsonify({"success": False})
 
 
