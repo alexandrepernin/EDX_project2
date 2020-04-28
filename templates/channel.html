@@ -2,7 +2,16 @@
 {% block title %} Channel {% endblock %}
 {% block js %}
 <script src="{{ url_for('static', filename='channel.js') }}"></script>
+<style>
+.nav-link {
+  border-top: 1px solid Gainsboro;
+  color: DimGrey;
+}
 
+.nav-link:hover {
+  background-color: #F0F8FF;
+}
+</style>
 {% endblock %}
 {% block left %}
 {% endblock %}
@@ -17,6 +26,7 @@
  <br>
  <h1 id='Name'> </h1>
  List of currently available channels:
+ <br>
  <br>
  <div id="link_list" class="list-group">
  </div>

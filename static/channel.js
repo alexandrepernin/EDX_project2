@@ -14,7 +14,7 @@ function get_channels(channel_list) {
           list_item.dataset.channel = existing_channels[i];
           list_item.id = existing_channels[i];
           list_item.href = "/chat";
-          list_item.innerHTML = "Channel ".concat(i.toString(), ": ",existing_channels[i]);
+          list_item.innerHTML = "Channel   #".concat(existing_channels[i]);
           document.querySelector('#link_list').appendChild(list_item);
         }
         document.querySelectorAll('.nav-link').forEach(link => {

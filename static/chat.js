@@ -41,9 +41,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const channel_name = localStorage.getItem('user_channel');
             document.title = channel_name;
             history.pushState(null, channel_name, 'chat/'.concat(channel_name));
-            document.querySelector('#current_chan').innerHTML=channel_name;
+            document.querySelector('#current_chan').innerHTML='#'.concat(channel_name);
             get_previous_messages(channel_name);
-
+            document.querySelector('#back_name').onclick = () => {
+              localStorage.removeItem('user_channel');
+              window.location ="/";
+            }
+            document.querySelector('#back_channel').onclick = () => {
+              localStorage.removeItem('user_channel');
+              window.location ="/channel";
+            }
             // Connect to websocket
             var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
 

@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "layout_chatroom.html" %}
 {% block title %} Chat {% endblock %}
 {% block js %}
 
@@ -9,12 +9,27 @@
     float: right;
     font-size: small;
     border: none;
+    background-color: white;
 }
 .delB:hover {
     color:red;
 }
+#current_chan {
+    font-size: x-large;
+    padding: 0 0 0 10%;
+}
+#back_name, #back_channel {
+    width: 50%;
+}
 </style>
 {% endblock %}
+
+{% block left %}
+<br>
+<br>
+<p id='current_chan'></p>
+{% endblock %}
+
 
 {% block middle %}
 <br>
@@ -30,23 +45,9 @@
 <button id="message_button" class="btn btn-primary">Send message</button>
 {% endblock %}
 
-{% block right %}
+{% block rightcorner %}
+<button id="back_channel" class="btn btn-outline-secondary">Change channel</button>
 <br>
 <br>
-<br>
-<br>
-<p> List of channels: </p>
-<br>
-{% if channels %}
-<div class="list-group">
-   {% for channel in channels %}
-   <a href="#" class="list-group-item list-group-item-action">Channel {{loop.index}}: {{channel}} </a>
-   {% endfor %}
-</div>
-<br>
-<br>
-<p id="current_chan"> You're on a channel called: XXX </p>
-{% else %}
-<p>Weird, channels object seems empty</p>
-{% endif %}
+<button id="back_name" class="btn btn-outline-info">Change name</button>
 {% endblock %}
