@@ -1,10 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
-
+              const previous_channel = localStorage.getItem('user_channel');
+              if (previous_channel) {
+                window.location = "/chat";
+              }
               // Local storage for the display name:
               document.querySelector('#submit_button').onclick = () => {
                 let name = document.querySelector('#name_entry').value
                 localStorage.setItem('Name', name);
-            };
+              };
 
               // By default, submit button is disabled
               document.querySelector('#submit_button').disabled = true;

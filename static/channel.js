@@ -54,7 +54,10 @@ function prevent_channel_duplicates() {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-
+      const previous_channel = localStorage.getItem('user_channel');
+      if (previous_channel) {
+        window.location = "/chat";
+      }
       // 1 - Get list of existing channels
       get_channels(channel_list);
 
