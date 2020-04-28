@@ -71,6 +71,22 @@ def get_messages():
     else:
         return jsonify({"success": False})
 
+@app.route("/del-message", methods=["POST"])
+def del_message():
+    global all_messages
+    timestamp = request.form.get("timestamp")
+    sender = request.form.get("sender")
+    message = request.form.get("message")
+    dict = {'message':message, 'timestamp':timestamp, 'sender':sender}
+    channel = request.form.get("channel")
+    if message:
+        for i,elem in enumerate(all_messages[channel]):
+            if elem==dict:
+                all_messages[channel].pop(i)
+            else: continue
+        return jsonify({"success": True})
+    else:
+        return jsonify({"success": False})
 
 if __name__ == '__main__':
     socketio.run(app)
