@@ -1,6 +1,5 @@
-var channel_list = [];
-// 0 - Get list of current channels
-
+//Method #1: Get the channels that were previously created and create the associated links to chatorooms
+//Comment: Improvement: Factor out the code within for loop
 function get_channels(channel_list) {
     const request = new XMLHttpRequest();
     request.open('GET', '/get-channels');
@@ -10,7 +9,6 @@ function get_channels(channel_list) {
           channel_list.push(existing_channels[i]);
           var list_item = document.createElement('a');
           list_item.className = "nav-link";
-          var channel_name = existing_channels[i];
           list_item.dataset.channel = existing_channels[i];
           list_item.id = existing_channels[i];
           list_item.href = "/chat";
@@ -31,6 +29,8 @@ function get_channels(channel_list) {
     request.send();
 };
 
+//Method #2: Ajax request to store the new channel name server-side when a user creates one.
+//Comment: Improvement: once sent, do not reload the page but call get_channels()
 function post_new_channel() {
   const request = new XMLHttpRequest();
   const channel_name = document.querySelector('#channel_entry').value;
@@ -44,7 +44,8 @@ function post_new_channel() {
   request.send(data);
 };
 
-function prevent_channel_duplicates() {
+//Method #3: Method to make sure the channel doesn't already exists before calling post_new_channel
+function prevent_channel_duplicates(channel_list) {
   if (!(channel_list.includes(document.querySelector('#channel_entry').value)) && (/[a-zA-Z]/.test(document.querySelector('#channel_entry').value))) {
     document.querySelector('#submit_button').disabled = false;
   }
@@ -54,29 +55,34 @@ function prevent_channel_duplicates() {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+
+      var channel_list = [];
+
+      // 0 - Redirect to chatroom if user closed the window and comes back to the site
       const previous_channel = localStorage.getItem('user_channel');
       if (previous_channel) {
         window.location = "/chat";
       }
+
       // 1 - Get list of existing channels
       get_channels(channel_list);
 
-      // 1 - Update welcome message with name stored in local storage
+      // 2 - Update welcome message with name stored in local storage
       document.querySelector('#Name').innerHTML = 'Hello '.concat(localStorage.getItem('Name'));
 
-      // 2 - Set the onsubmit property of the button: Ajax request to store server-side the new channel name
+      // 3 - Set the onsubmit property of the button: Ajax request to store server-side the new channel name
       document.querySelector('#form').onsubmit = () => post_new_channel();
 
-      // 3 - Make sure the channel name is new
-      // 3.1 - By default, submit button is disabled
+      // 4 - Make sure the channel name is new
+      // 4.1 - By default, submit button is disabled
       document.querySelector('#submit_button').disabled = true;
-      // 3.2 - On key up => verifies that contains at least one letter and that the channels is not already in the channel list
-      document.querySelector('#channel_entry').onkeyup = () => prevent_channel_duplicates();
+      // 4.2 - On key up => verifies that contains at least one letter and that the channels is not already in the channel list
+      document.querySelector('#channel_entry').onkeyup = () => prevent_channel_duplicates(channel_list);
 
       document.getElementById('link_list').childNodes.forEach(link => {
                     link.onclick = () => {
-                        var dataloop = link.dataset.channel;
-                        localStorage.setItem('user_channel', dataloop);
+                        var channel_name = link.dataset.channel;
+                        localStorage.setItem('user_channel', channel_name);
                         return false;
                     };
                 });

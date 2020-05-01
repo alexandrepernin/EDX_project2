@@ -11,6 +11,7 @@ socketio = SocketIO(app)
 
 channels = []
 all_messages = {}
+MAX_NB_MESSAGES=100
 
 @app.route("/")
 def index():
@@ -19,7 +20,7 @@ def index():
 @app.route("/channel", methods=["GET", "POST"])
 def channel():
     return render_template('channel.html')
-    
+
 @app.route("/chat", methods=["GET","POST"])
 def chat():
     return render_template('chat.html')
@@ -32,7 +33,7 @@ def send(data):
     channel = data["channel"]
     timestamp = datetime.datetime.now().strftime("(%d-%b-%Y) %H:%M")
     all_messages[channel].append({'message':message, 'timestamp':timestamp, 'sender':sender})
-    if len(all_messages[channel])>=101:
+    if len(all_messages[channel])>MAX_NB_MESSAGES:
         all_messages[channel]=all_messages[channel][1:]
     emit("deliver message", {"message": message, "sender":sender, "time": timestamp, "channel":channel}, broadcast=True)
 
@@ -47,7 +48,6 @@ def create_channel():
         channels.append(channel)
         all_messages[channel] = []
         channels = list(dict.fromkeys(channels))
-
         return jsonify({"success": True})
 
 @app.route("/get-channels", methods=["GET"])
