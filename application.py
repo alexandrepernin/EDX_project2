@@ -32,6 +32,7 @@ def send(data):
     sender = data["sender"]
     channel = data["channel"]
     timestamp = datetime.datetime.now().strftime("(%d-%b-%Y) %H:%M")
+    app.logger.info("Message '{}' sent on channel {} by {} at {}'".format(message, channel, sender, timestamp))
     all_messages[channel].append({'message':message, 'timestamp':timestamp, 'sender':sender})
     if len(all_messages[channel])>MAX_NB_MESSAGES:
         all_messages[channel]=all_messages[channel][1:]
@@ -58,7 +59,7 @@ def get_channel():
 def get_messages():
     channel = request.form.get("channel_name")
     if channel:
-        app.logger.info('Channel pour lequel on demande les messages: {}'.format(channel))
+        app.logger.info('Retrieving previous messages for channel: {}'.format(channel))
         app.logger.info(print(json.dumps(all_messages[channel])))
         if len(all_messages[channel])>0:
             return jsonify(all_messages[channel])

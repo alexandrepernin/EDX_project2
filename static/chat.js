@@ -1,3 +1,4 @@
+// Method to get the messages sent previously on that channel
 function get_previous_messages(channel_name) {
     const request = new XMLHttpRequest();
     request.open('POST', '/get-messages');
@@ -38,11 +39,14 @@ function get_previous_messages(channel_name) {
 
 
 document.addEventListener('DOMContentLoaded', () => {
+
+            // 0 - Retrieve previously sent message for that channel
             const channel_name = localStorage.getItem('user_channel');
+            get_previous_messages(channel_name);
+            // 0.5 - Configure document title, url and onclick events for back buttons
             document.title = channel_name;
             history.pushState(null, channel_name, 'chat/'.concat(channel_name));
             document.querySelector('#current_chan').innerHTML='#'.concat(channel_name);
-            get_previous_messages(channel_name);
             document.querySelector('#back_name').onclick = () => {
               localStorage.removeItem('user_channel');
               window.location ="/";
@@ -51,24 +55,24 @@ document.addEventListener('DOMContentLoaded', () => {
               localStorage.removeItem('user_channel');
               window.location ="/channel";
             }
-            // Connect to websocket
-            var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
 
+            // 1 - Connect to websocket
+            var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
             // When connected, configure buttons
             socket.on('connect', () => {
-
                 // The button should emit a "Send message" event
                 document.querySelector('#message_button').onclick = () => {
+                  const send_message_on_channel = localStorage.getItem('user_channel');
                   const message = document.querySelector('#message_entry').value;
                   const sender = localStorage.getItem('Name');
-                  const channel1 = localStorage.getItem('user_channel');
                   // Emit to the web server the event called Send Message, associated with a json object
-                  socket.emit('Send message', {'message': message, 'sender': sender, 'channel':channel1});
+                  socket.emit('Send message', {'message': message, 'sender': sender, 'channel':send_message_on_channel});
                   document.querySelector('#message_entry').value = "";
                 }
             });
 
-            // When a new message is announced, add to the unordered list
+            // When a new message is announced, add message to list and configure delete button
+            // Comment: Improvement: factor out the code to create the delete button
             socket.on('deliver message', data => {
                 const current_channel = localStorage.getItem('user_channel');
                 if (data.channel==current_channel) {
